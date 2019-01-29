@@ -48,7 +48,7 @@ This project is using `oatpp` and `oatpp-libressl` modules.
 #### Using CMake
 *Requires* LibreSSL installed. You may refer to this sh script - how to install libressl - 
 [install-libressl.sh](https://github.com/oatpp/oatpp-libressl/blob/master/utility/install-deps/install-libressl.sh).  
-Or try something like ```apk add libressl-dev```
+Or try something like ```$ apk add libressl-dev```
 
 ```
 $ mkdir build && cd build
