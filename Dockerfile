@@ -1,4 +1,6 @@
-FROM lganzzzo/alpine-cmake-libressl:latest
+FROM lganzzzo/alpine-cmake:latest
+
+RUN apk add libressl-dev
 
 ADD . /service
 
