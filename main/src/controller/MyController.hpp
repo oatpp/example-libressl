@@ -78,7 +78,7 @@ public:
     
     Action act() override {
       /* return Action to start child coroutine to read body */
-      return request->readBodyToStringAsync(this, &EchoStringBody::returnResponse);
+      return request->readBodyToStringAsync().callbackTo(&EchoStringBody::returnResponse);
     }
     
     Action returnResponse(const oatpp::String& body){
@@ -98,7 +98,7 @@ public:
     ENDPOINT_ASYNC_INIT(EchoDtoBody)
     
     Action act() override {
-      return request->readBodyToDtoAsync<MessageDto>(this, &EchoDtoBody::returnResponse, controller->getDefaultObjectMapper());
+      return request->readBodyToDtoAsync<MessageDto>(controller->getDefaultObjectMapper()).callbackTo(&EchoDtoBody::returnResponse);
     }
     
     Action returnResponse(const MessageDto::ObjectWrapper& body){
@@ -112,11 +112,11 @@ public:
     ENDPOINT_ASYNC_INIT(TestApiGet)
     
     Action act() override {
-      return controller->myApiClient->apiGetAsync(this, &TestApiGet::onResponse);
+      return controller->myApiClient->apiGetAsync().callbackTo(&TestApiGet::onResponse);
     }
     
     Action onResponse(const std::shared_ptr<IncomingResponse>& response){
-      return response->readBodyToStringAsync(this, &TestApiGet::returnResult);
+      return response->readBodyToStringAsync().callbackTo(&TestApiGet::returnResult);
     }
     
     Action returnResult(const oatpp::String& body) {
