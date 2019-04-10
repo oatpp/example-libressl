@@ -127,11 +127,11 @@ ENDPOINT_ASYNC("GET", "/api/get", TestApiGet) {
   ENDPOINT_ASYNC_INIT(TestApiGet)
 
   Action act() override {
-    return controller->myApiClient->apiGetAsync(this, &TestApiGet::onResponse);
+    return controller->myApiClient->apiGetAsync().callbackTo(&TestApiGet::onResponse);
   }
 
   Action onResponse(const std::shared_ptr<IncomingResponse>& response){
-    return response->readBodyToStringAsync(this, &TestApiGet::returnResult);
+    return response->readBodyToStringAsync().callbackTo(&TestApiGet::returnResult);
   }
 
   Action returnResult(const oatpp::String& body) {
