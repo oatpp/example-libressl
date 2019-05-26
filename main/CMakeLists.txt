@@ -8,9 +8,8 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_library(${project_name}-lib
         src/AppComponent.hpp
-        src/Logger.cpp
-        src/Logger.hpp
         src/client/MyApiClient.hpp
+        src/controller/MyController.cpp
         src/controller/MyController.hpp
         src/dto/MyDTOs.hpp
 )
