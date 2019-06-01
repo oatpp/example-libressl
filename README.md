@@ -6,9 +6,9 @@ Example project of how-to use [oatpp-libressl](https://github.com/oatpp/oatpp-li
 - Using oatpp Async API.
 
 #### More about oat++:
-- Website: [https://oatpp.io](https://oatpp.io)
-- Docs: [https://oatpp.io/docs/start](https://oatpp.io/docs/start)
-- Oat++ Repo: [https://github.com/oatpp/oatpp](https://github.com/oatpp/oatpp)
+
+- [Oat++ Website](https://oatpp.io/)
+- [Oat++ Github Repository](https://github.com/oatpp/oatpp)
 
 ## Overview
 This project is using `oatpp` and `oatpp-libressl` modules.
@@ -16,16 +16,11 @@ This project is using `oatpp` and `oatpp-libressl` modules.
 ### Project layout
 
 ```
-
-|- CMakeLists.txt               // project loader script. load and build dependencies 
-|- main/                        // main project directory
-|    |
-|    |- CMakeLists.txt          // projects CMakeLists.txt
-|    |- src/                    // source folder
-|    |- test/                   // test folder
-|
-|- cert/                        // folder with test certificates 
-
+- CMakeLists.txt                        // projects CMakeLists.txt
+- src/                                  // source folder
+- test/                                 // test folder
+- utility/install-oatpp-modules.sh      // utility script to install required oatpp-modules.
+- cert/                                 // folder with test certificates 
 ```
 ```
 - src/
@@ -43,18 +38,21 @@ This project is using `oatpp` and `oatpp-libressl` modules.
 
 ### Build and Run
 
-
-
 #### Using CMake
-*Requires* LibreSSL installed. You may refer to this sh script - how to install libressl - 
+**Requires** 
+
+- LibreSSL installed. You may refer to this sh script - how to install libressl - 
 [install-libressl.sh](https://github.com/oatpp/oatpp-libressl/blob/master/utility/install-deps/install-libressl.sh).  
 Or try something like ```$ apk add libressl-dev```
+
+- `oatpp` and `oatpp-libressl` modules installed. You may run `utility/install-oatpp-modules.sh` 
+script to install required oatpp modules.
 
 ```
 $ mkdir build && cd build
 $ cmake ..
-$ make run        ## Download, build, and install all dependencies. Run project
-
+$ make 
+$ ././example-libressl-exe  # - run application.
 ```
 
 #### In Docker
