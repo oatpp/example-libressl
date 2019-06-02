@@ -5,33 +5,31 @@ Example project of how-to use [oatpp-libressl](https://github.com/oatpp/oatpp-li
 - Make client calls via HTTPS. 
 - Using oatpp Async API.
 
-#### More about oat++:
+See more:
 
 - [Oat++ Website](https://oatpp.io/)
 - [Oat++ Github Repository](https://github.com/oatpp/oatpp)
+- [Get Started](https://oatpp.io/docs/start)
 
 ## Overview
-This project is using `oatpp` and `oatpp-libressl` modules.
+
+This project is using [oatpp](https://github.com/oatpp/oatpp) and [oatpp-libressl](https://github.com/oatpp/oatpp-libressl) modules.
 
 ### Project layout
 
 ```
-- CMakeLists.txt                        // projects CMakeLists.txt
-- src/                                  // source folder
-- test/                                 // test folder
-- utility/install-oatpp-modules.sh      // utility script to install required oatpp-modules.
-- cert/                                 // folder with test certificates 
-```
-```
-- src/
-    |
-    |- controller/              // Folder containing Controller where all endpoints are declared
-    |- client/                   // HTTP client is here. Used in "proxy" endpoint /api/get
-    |- dto/                     // DTOs are declared here
-    |- AppComponent.hpp         // Service config
-    |- Logger.hpp               // Application Logger
-    |- App.cpp                  // main() is here
-    
+|- CMakeLists.txt                        // projects CMakeLists.txt
+|- src/
+|    |
+|    |- controller/                      // Folder containing Controller where all endpoints are declared
+|    |- client/                          // HTTP client is here. Used in "proxy" endpoint /api/get
+|    |- dto/                             // DTOs are declared here
+|    |- AppComponent.hpp                 // Service config
+|    |- App.cpp                          // main() is here
+|    
+|- test/                                 // test folder
+|- utility/install-oatpp-modules.sh      // utility script to install required oatpp-modules.
+|- cert/                                 // folder with test certificates 
 ```
 
 ---
