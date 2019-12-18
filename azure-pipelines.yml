@@ -10,10 +10,14 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     container:
-      image: lganzzzo/ubuntu-cmake-libressl:latest
+      image: lganzzzo/ubuntu-cmake:latest
     workspace:
       clean: all
     steps:
+      - script: |
+          sudo ./install-libressl.sh
+        workingDirectory: utility
+        displayName: 'install LibreSSL'
       - script: |
           sudo ./install-oatpp-modules.sh
         displayName: 'install oatpp modules'

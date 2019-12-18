@@ -21,37 +21,23 @@ target_include_directories(${project_name}-lib PUBLIC src)
 find_package(oatpp          0.19.10 REQUIRED)
 find_package(oatpp-libressl 0.19.10 REQUIRED)
 
+include(FindPkgConfig) # <-- include pkg-config needed by FindLibreSSL.cmake script
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake") # <-- use FindLibreSSL.cmake in /cmake folder
+
+find_package(LibreSSL 3.0.0 REQUIRED)
+
 target_link_libraries(${project_name}-lib
+
+        # Oat++ libraries
         PUBLIC oatpp::oatpp
         PUBLIC oatpp::oatpp-test
-        PUBLIC oatpp::oatpp-libressl
-)
+        PUBLIC oatpp::oatpp-libressl # <-- oatpp-libressl adapter
 
-#################################################################
-## link libressl
+        # LibreSSL libraries
+        PUBLIC LibreSSL::TLS
+        PUBLIC LibreSSL::SSL
+        PUBLIC LibreSSL::Crypto
 
-include(FindPkgConfig)
-
-pkg_check_modules(PKG_TLS REQUIRED libtls)
-pkg_check_modules(PKG_SSL REQUIRED libssl)
-pkg_check_modules(PKG_CRYPTO REQUIRED libcrypto)
-
-target_include_directories(${project_name}-lib
-        PUBLIC ${PKG_TLS_INCLUDE_DIRS}
-        PUBLIC ${PKG_SSL_INCLUDE_DIRS}
-        PUBLIC ${PKG_CRYPTO_INCLUDE_DIRS}
-)
-
-link_directories(
-        ${PKG_TLS_LIBRARY_DIRS}
-        ${PKG_SSL_LIBRARY_DIRS}
-        ${PKG_CRYPTO_LIBRARY_DIRS}
-)
-
-target_link_libraries(${project_name}-lib
-        PUBLIC ${PKG_TLS_LIBRARIES}
-        PUBLIC ${PKG_SSL_LIBRARIES}
-        PUBLIC ${PKG_CRYPTO_LIBRARIES}
 )
 
 #################################################################

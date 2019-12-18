@@ -38,10 +38,10 @@ public:
    *  Create ConnectionProvider component which listens on the port
    */
   OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::network::ServerConnectionProvider>, serverConnectionProvider)([] {
-    /* non_blocking connections should be used with AsyncHttpConnectionHandler for AsyncIO */
+
     OATPP_LOGD("oatpp::libressl::Config", "pem='%s'", CERT_PEM_PATH);
     OATPP_LOGD("oatpp::libressl::Config", "crt='%s'", CERT_CRT_PATH);
-    auto config = oatpp::libressl::Config::createDefaultServerConfig(CERT_PEM_PATH, CERT_CRT_PATH);
+    auto config = oatpp::libressl::Config::createDefaultServerConfigShared(CERT_CRT_PATH, CERT_PEM_PATH /* private key */);
 
     /**
      * if you see such error:
@@ -50,7 +50,7 @@ public:
      * Try to make sure you are using libtls, libssl, and libcrypto from the same package
      */
 
-    return oatpp::libressl::server::ConnectionProvider::createShared(config, 8443, true /* true for non_blocking */);
+    return oatpp::libressl::server::ConnectionProvider::createShared(config, 8443);
   }());
   
   /**
