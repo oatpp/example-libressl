@@ -1,16 +1,9 @@
-//
-//  UserDto.hpp
-//  crud
-//
-//  Created by Leonid on 3/13/18.
-//  Copyright © 2018 oatpp. All rights reserved.
-//
 
 #ifndef MyDTOs_hpp
 #define MyDTOs_hpp
 
-#include "oatpp/core/data/mapping/type/Object.hpp"
 #include "oatpp/core/macro/codegen.hpp"
+#include "oatpp/core/Types.hpp"
 
 #include OATPP_CODEGEN_BEGIN(DTO)
 
@@ -18,7 +11,7 @@
  *  Data Transfer Object. Object containing fields only.
  *  Used in API for serialization/deserialization and validation
  */
-class HelloDto : public oatpp::data::mapping::type::Object {
+class HelloDto : public oatpp::Object {
   
   DTO_INIT(HelloDto, Object)
   
