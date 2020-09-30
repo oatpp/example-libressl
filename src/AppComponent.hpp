@@ -13,8 +13,8 @@
 #include "oatpp/web/server/AsyncHttpConnectionHandler.hpp"
 #include "oatpp/web/server/HttpRouter.hpp"
 
-#include "oatpp/network/client/SimpleTCPConnectionProvider.hpp"
-#include "oatpp/network/server/SimpleTCPConnectionProvider.hpp"
+#include "oatpp/network/tcp/client/ConnectionProvider.hpp"
+#include "oatpp/network/tcp/server/ConnectionProvider.hpp"
 
 #include "oatpp/parser/json/mapping/ObjectMapper.hpp"
 
@@ -43,7 +43,7 @@ public:
      * Try to make sure you are using libtls, libssl, and libcrypto from the same package
      */
 
-    return oatpp::libressl::server::ConnectionProvider::createShared(config, 8443);
+    return oatpp::libressl::server::ConnectionProvider::createShared(config, {"localhost", 8443});
   }());
   
   /**
@@ -56,7 +56,7 @@ public:
   /**
    *  Create ConnectionHandler component which uses Router component to route requests
    */
-  OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::network::server::ConnectionHandler>, serverConnectionHandler)([] {
+  OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::network::ConnectionHandler>, serverConnectionHandler)([] {
     OATPP_COMPONENT(std::shared_ptr<oatpp::web::server::HttpRouter>, router); // get Router component
     /* Async ConnectionHandler for Async IO and Coroutine based endpoints */
     return oatpp::web::server::AsyncHttpConnectionHandler::createShared(router);
@@ -77,8 +77,7 @@ public:
     auto config = oatpp::libressl::Config::createShared();
     tls_config_insecure_noverifycert(config->getTLSConfig());
     tls_config_insecure_noverifyname(config->getTLSConfig());
-    return oatpp::libressl::client::ConnectionProvider::createShared(config, "httpbin.org", 443);
-    //return oatpp::network::client::SimpleTCPConnectionProvider::createShared("httpbin.org", 80);
+    return oatpp::libressl::client::ConnectionProvider::createShared(config, {"httpbin.org", 443});
   }());
   
   OATPP_CREATE_COMPONENT(std::shared_ptr<MyApiClient>, myApiClient)([] {
