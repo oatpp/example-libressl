@@ -43,7 +43,7 @@ public:
      * Try to make sure you are using libtls, libssl, and libcrypto from the same package
      */
 
-    return oatpp::libressl::server::ConnectionProvider::createShared(config, {"localhost", 8443});
+    return oatpp::libressl::server::ConnectionProvider::createShared(config, {"0.0.0.0", 8443, oatpp::network::Address::IP_4});
   }());
   
   /**
