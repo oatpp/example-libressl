@@ -19,7 +19,7 @@ jobs:
         workingDirectory: utility
         displayName: 'install LibreSSL'
       - script: |
-          sudo ./install-oatpp-modules.sh
+          sudo /bin/bash ./install-oatpp-modules.sh
         displayName: 'install oatpp modules'
         workingDirectory: utility
       - script: |
