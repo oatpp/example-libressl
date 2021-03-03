@@ -21,7 +21,9 @@ void run() {
   oatpp::libressl::Callbacks::setDefaultCallbacks();
   
   /* ignore SIGPIPE */
-  std::signal(SIGPIPE, SIG_IGN);
+  #if !(defined(WIN32) || defined(_WIN32))
+    std::signal(SIGPIPE, SIG_IGN);
+  #endif
   
   AppComponent components; // Create scope Environment components
   
