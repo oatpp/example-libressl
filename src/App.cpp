@@ -9,6 +9,15 @@
 #include <iostream>
 #include <csignal>
 
+void signal_handler(int signal) {
+  if (signal == SIGHUP) {
+    auto switcher = std::dynamic_pointer_cast<AppComponent::ProxyConnectionProvider>(OATPP_GET_COMPONENT(std::shared_ptr<oatpp::network::ServerConnectionProvider>, "sslProvider"));
+    if (switcher) {
+      switcher->resetProvider(AppComponent::createNewProvider());
+    }
+  }
+}
+
 /**
  *  run() method.
  *  1) set Environment components.
@@ -21,12 +30,14 @@ void run() {
   oatpp::libressl::Callbacks::setDefaultCallbacks();
   
   /* ignore SIGPIPE */
+
   #if !(defined(WIN32) || defined(_WIN32))
     std::signal(SIGPIPE, SIG_IGN);
   #endif
   
   AppComponent components; // Create scope Environment components
-  
+  std::signal(SIGHUP, signal_handler); // Install signal-handler for SIGHUP SSL-Certificate reloading
+
   /* create ApiControllers and add endpoints to router */
   
   auto router = components.httpRouter.getObject();
