@@ -26,24 +26,72 @@
  */
 class AppComponent {
 public:
-  
+
   /**
-   *  Create ConnectionProvider component which listens on the port
+   * Helper-Function to create an SSL-Provider on the fly
    */
-  OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::network::ServerConnectionProvider>, serverConnectionProvider)([] {
-
-    OATPP_LOGD("oatpp::libressl::Config", "pem='%s'", CERT_PEM_PATH);
-    OATPP_LOGD("oatpp::libressl::Config", "crt='%s'", CERT_CRT_PATH);
-    auto config = oatpp::libressl::Config::createDefaultServerConfigShared(CERT_CRT_PATH, CERT_PEM_PATH /* private key */);
-
+  static std::shared_ptr<oatpp::network::ServerConnectionProvider> createNewProvider() {
     /**
      * if you see such error:
      * oatpp::libressl::server::ConnectionProvider:Error on call to 'tls_configure'. ssl context failure
      * It might be because you have several ssl libraries installed on your machine.
      * Try to make sure you are using libtls, libssl, and libcrypto from the same package
      */
+    OATPP_LOGD("AppComponent::createNewProvider()", "(Re-)Loading Certificates");
+    OATPP_LOGD("AppComponent::createNewProvider()", "pem='%s'", CERT_PEM_PATH);
+    OATPP_LOGD("AppComponent::createNewProvider()", "crt='%s'", CERT_CRT_PATH);
+    auto config = oatpp::libressl::Config::createDefaultServerConfigShared(CERT_CRT_PATH, CERT_PEM_PATH /* private key */);
+    return oatpp::libressl::server::ConnectionProvider::createShared(config, OATPP_GET_COMPONENT(std::shared_ptr<oatpp::network::ServerConnectionProvider>, "streamProvider"));
+  }
 
-    return oatpp::libressl::server::ConnectionProvider::createShared(config, {"0.0.0.0", 8443, oatpp::network::Address::IP_4});
+  /**
+   * Proxy-Provider to quickly switch connection-providers using the component system.
+   */
+  class ProxyConnectionProvider : public oatpp::network::ServerConnectionProvider {
+   private:
+    std::shared_ptr<oatpp::network::ServerConnectionProvider> m_currentProvider;
+   public:
+
+    std::shared_ptr<oatpp::data::stream::IOStream> get() override {
+      return m_currentProvider->get();
+    }
+
+    /* call this method when certificates changed and a new SSL connection provider created */
+    void resetProvider(const std::shared_ptr<oatpp::network::ServerConnectionProvider>& newProvider) {
+      m_currentProvider = newProvider;
+    }
+
+    oatpp::async::CoroutineStarterForResult<const std::shared_ptr<oatpp::data::stream::IOStream> &> getAsync() override {
+      return m_currentProvider->getAsync();
+    }
+
+    void invalidate(const std::shared_ptr<oatpp::data::stream::IOStream> &resource) override {
+      m_currentProvider->invalidate(resource);
+    }
+
+    void stop() override {
+      m_currentProvider->stop();
+    }
+
+  };
+
+  /**
+   * Create the streamProvider, this is the ConnectionProvider who does the actual socket handling which is passed to
+   * the sslProvider which does the SSL-Handshaking
+   */
+  OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::network::ServerConnectionProvider>, streamProvider)("streamProvider", []{
+    return oatpp::network::tcp::server::ConnectionProvider::createShared({"0.0.0.0", 8443, oatpp::network::Address::IP_4});
+  }());
+
+  /**
+   *  Create ConnectionProvider "sslProvider" which does the SSL-Handshaking and can be replaced on the fly
+   *  with new ssl certificates
+   */
+  OATPP_CREATE_COMPONENT(std::shared_ptr<oatpp::network::ServerConnectionProvider>, serverConnectionProvider)("sslProvider", [] {
+    auto proxyProvider = std::make_shared<ProxyConnectionProvider>();
+    proxyProvider->resetProvider(createNewProvider());
+
+    return proxyProvider;
   }());
   
   /**
